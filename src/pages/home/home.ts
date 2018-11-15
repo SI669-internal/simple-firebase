@@ -23,25 +23,38 @@ export class HomePage {
   private name: string = "";
   private remoteItem: string = "";
   private remoteName: string = "";
-
+  private foodPrefs: any[] = [];
+  
   constructor(public navCtrl: NavController) {
     firebase.initializeApp(firebaseConfig);
     this.db = firebase.database();
-    let dataRef = this.db.ref('/');
+    let dataRef = this.db.ref('/foodPrefs');
     dataRef.on('value', snapshot => {
-      let foodPref = snapshot.val().foodPref;
-      this.remoteName = foodPref.name;
-      this.remoteItem = foodPref.item;
-      console.log("Got update: ", foodPref)
+      console.log(snapshot);
+      this.foodPrefs = []; //start with a blank list
+      snapshot.forEach(childSnapshot => {
+        let foodPref = {
+          key: childSnapshot.key,
+          name: childSnapshot.val().name,
+          item: childSnapshot.val().item
+        };
+        console.log(foodPref);
+        this.foodPrefs.push(foodPref);
+      });
+      // let foodPref = snapshot.val().foodPref;
+      // this.remoteName = foodPref.name;
+      // this.remoteItem = foodPref.item;
+      // console.log("Got update: ", foodPref)
      });
-
   }
+
   private saveToFirebase() {
-    let dataRef = this.db.ref('/');
+    let listRef = this.db.ref('/foodPrefs');
+    let prefRef = listRef.push();
     let dataRecord = {
       name: this.name,
       item: this.item
     }
-    dataRef.set({foodPref: dataRecord});
+    prefRef.set(dataRecord);
   }
 }
