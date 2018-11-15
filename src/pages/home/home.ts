@@ -20,6 +20,7 @@ export class HomePage {
 
   private db: any;
   private item: string = "";
+  private name: string = "";
 
   constructor(public navCtrl: NavController) {
     firebase.initializeApp(firebaseConfig);
@@ -31,8 +32,10 @@ export class HomePage {
   }
   private saveToFirebase() {
     let dataRef = this.db.ref('/');
-    dataRef.set({itemKey: this.item});
+    let dataRecord = {
+      name: this.name,
+      item: this.item
+    }
+    dataRef.set({foodPref: dataRecord});
   }
-
-
 }
