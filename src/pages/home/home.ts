@@ -21,13 +21,19 @@ export class HomePage {
   private db: any;
   private item: string = "";
   private name: string = "";
+  private remoteItem: string = "";
+  private remoteName: string = "";
 
   constructor(public navCtrl: NavController) {
     firebase.initializeApp(firebaseConfig);
     this.db = firebase.database();
-    // this.appDataRef.on('value', snapshot => {
-    //   console.log(snapshot.toJSON());
-    // });
+    let dataRef = this.db.ref('/');
+    dataRef.on('value', snapshot => {
+      let foodPref = snapshot.val().foodPref;
+      this.remoteName = foodPref.name;
+      this.remoteItem = foodPref.item;
+      console.log("Got update: ", foodPref)
+     });
 
   }
   private saveToFirebase() {
